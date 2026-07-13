@@ -27,3 +27,7 @@ A production-ready Data Engineering pipeline deploying an asynchronous NoSQL dat
     "terrain": ["All-Mountain", "Powder"]
   }
 }
+## 📊 Advanced Analytics & Data Querying
+The pipeline includes analytical querying layers utilizing MongoDB’s query operators:
+* **Selective Projection:** Filters complex nested documents (e.g., retrieving `specs.displays` for audio hardware) minimizing network payload sizes.
+* **Range-based Evaluation:** Leverages operators like `$lt` (less than) to trigger automated low-stock supply chain alerts.
