@@ -50,11 +50,68 @@ def ingest_catalog_data(client: MongoClient) -> int:
         )
     return products_collection.count_documents({})
 
+def query_electronics_catalog(client: MongoClient):
+    """Queries and filters products under the electronics category with specific projections."""
+    db = client["ecommerce_platform"]
+    products_collection = db["products"]
+    
+    print("\n--- [QUERY] Fetching Electronics with Embedded Specifications ---")
+    # Filtramos por categoría y proyectamos solo campos necesarios para optimizar ancho de banda
+    query = {"category": "Electronics"}
+    projection = {"name": 1, "price": 1, "specs.displays": 1, "_id": 0}
+    
+    results = products_collection.find(query, projection)
+    for doc in results:
+        print(f"Product: {doc.get('name')} | Price: ${doc.get('price')} | UI: {doc.get('specs', {}).get('displays', 'N/A')}")
+
+def query_low_stock_alerts(client: MongoClient, threshold: int = 10):
+    """Fetches items with stock levels below the specified threshold."""
+    db = client["ecommerce_platform"]
+    products_collection = db["products"]
+    
+    print(f"\n--- [QUERY] Inventory Alert: Stock lower than {threshold} units ---")
+    query = {"stock": {"$lt": threshold}}
+    
+    results = products_collection.find(query)
+    for doc in results:
+        print(f"ALERT -> SKU: {doc.get('sku')} | Name: {doc.get('name')} | Current Stock: {doc.get('stock')}")
+
+def query_electronics_catalog(client: MongoClient):
+    """Queries and filters products under the electronics category with specific projections."""
+    db = client["ecommerce_platform"]
+    products_collection = db["products"]
+    
+    print("\n--- [QUERY] Fetching Electronics with Embedded Specifications ---")
+    # Filtramos por categoría y proyectamos solo campos necesarios para optimizar ancho de banda
+    query = {"category": "Electronics"}
+    projection = {"name": 1, "price": 1, "specs.displays": 1, "_id": 0}
+    
+    results = products_collection.find(query, projection)
+    for doc in results:
+        print(f"Product: {doc.get('name')} | Price: ${doc.get('price')} | UI: {doc.get('specs', {}).get('displays', 'N/A')}")
+
+def query_low_stock_alerts(client: MongoClient, threshold: int = 10):
+    """Fetches items with stock levels below the specified threshold."""
+    db = client["ecommerce_platform"]
+    products_collection = db["products"]
+    
+    print(f"\n--- [QUERY] Inventory Alert: Stock lower than {threshold} units ---")
+    query = {"stock": {"$lt": threshold}}
+    
+    results = products_collection.find(query)
+    for doc in results:
+        print(f"ALERT -> SKU: {doc.get('sku')} | Name: {doc.get('name')} | Current Stock: {doc.get('stock')}")
+
 if __name__ == "__main__":
     mongo_client = get_mongo_client(CONNECTION_STRING)
     try:
         mongo_client.admin.command('ping')
         active_documents = ingest_catalog_data(mongo_client)
-        print(f"[SUCCESS] Pipeline executed. Total active documents in cluster: {active_documents}")
+        print(f"[SUCCESS] Pipeline executed. Total active documents: {active_documents}")
+        
+        # Ejecución de consultas analíticas avanzadas
+        query_electronics_catalog(mongo_client)
+        query_low_stock_alerts(mongo_client, threshold=10)
+        
     except Exception as error:
         print(f"[CRITICAL] Operational failure: {error}")
