@@ -1,5 +1,6 @@
 # E-commerce Polymorphic Dynamic Catalog Architecture
 
+![Automated Ingestion Status](https://github.com/Meuco-source/nosql-catalog-document-store/workflows/Automated%20NoSQL%20Data%20Ingestion%20Pipeline/badge.svg)
 A production-ready Data Engineering pipeline deploying an asynchronous NoSQL database architecture on MongoDB Atlas (Google Cloud Platform - Belgium Region). This system leverages a polymorphic schema layout designed to handle highly heterogeneous business inventories with zero schema rigidity.
 
 ## 🚀 Business Impact & Features
@@ -31,3 +32,7 @@ A production-ready Data Engineering pipeline deploying an asynchronous NoSQL dat
 The pipeline includes analytical querying layers utilizing MongoDB’s query operators:
 * **Selective Projection:** Filters complex nested documents (e.g., retrieving `specs.displays` for audio hardware) minimizing network payload sizes.
 * **Range-based Evaluation:** Leverages operators like `$lt` (less than) to trigger automated low-stock supply chain alerts.
+## ⚙️ CI/CD & Data Orchestration
+The data ingestion and analytical layer are fully automated using **GitHub Actions**:
+* **Scheduled Trigger:** Configured via a `cron` schedule to execute automatically every Monday at 08:00 UTC for automated inventory updates.
+* **Secret Masking:** Database credentials are systematically isolated from the source code, leveraging GitHub's encrypted secrets framework (`secrets.MONGO_CONNECTION_STRING`).
